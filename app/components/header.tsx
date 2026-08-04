@@ -1,6 +1,6 @@
 export default function Header() {
     return (
-        <header className="bg-white shadow-md fixed w-full top-0 left-0 z-50">
+        <header className="bg-white shadow-md  w-full top-0 left-0 z-50">
   <nav className="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
     <div className="flex items-center">
     <img src="/images/profile.jpg" style={{width: '40px', height: '40px', borderRadius: '70%'}} title="Logo web" />
