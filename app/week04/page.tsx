@@ -10,7 +10,9 @@ export default function ToDoList() {
     const role = "Student";
 
     const toDoItem = [
-        "study web programming","study Business Data analysis","Dinner at home"
+        "study web programming",
+        "study Business Data analysis",
+        "Dinner at home"
     ];
 
     const isActive = (active: boolean) => {
