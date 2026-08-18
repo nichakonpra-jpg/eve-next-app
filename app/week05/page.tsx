@@ -5,12 +5,18 @@ import Footer from "../components/footer";
 
 import { useState } from "react";
 import ToDoForm from "./components/ToDoForm";
+import Modal from "./components/Modal";
 
 export default function ToDoList(){
 
         // State Variables
     const [count, setCount] = useState(0);
     const [comp, setComp] = useState(null);
+    const [open,setOpen] = useState(null);
+    const [selectedTask,setSelectedTask] = useState(null);
+    const [editingTask,setEditingTask] = useState(null);
+
+    const resetEditingTask = () => setEditingTask(null);
 
     const incCount = () => {
         setCount(count+1);
@@ -85,7 +91,30 @@ const [tasks, setTasks] = useState(updateToDoList);
         setTasks(updateTasks);
     }
 
-    const getToDoItem = tasks.map((item) => {
+    const handleView=(task)=>{
+        //alert('You choose handleView function.');
+        setSelectedTask(task);
+        setOpen(true);
+    }
+
+    const handleEdit=(task)=>{
+        //alert(task);
+        setEditingTask(task);
+    }
+
+    const updateTask = (id,title,completed) =>{
+        setTasks(
+            (tasks)=> tasks.map((t)=>
+            t.id === id ? {
+                ...t,
+                title: title,
+                completed: completed
+            } : t
+        ));
+        setEditingTask(null);
+    }
+
+    const getToDoItem = tasks.map((item) => { 
         //li>{item}</li>;
         const {id, title, completed} = item;
 
@@ -99,6 +128,15 @@ const [tasks, setTasks] = useState(updateToDoList);
         <span className="text-sm font-medium text-gray-700">{title}</span>
         <span className="text-sm font-medium text-gray-700">status: {isCompleted(completed)}</span>
       </div>
+
+<div className="flex gap-2 mt-2">
+    {/* View */}
+    <button onClick={(e)=>handleView(item)} className="bg-green-500 text-white px-3 py-1 rounded">View</button>
+
+    {/* Edit */}
+    <button onClick={(e)=>handleEdit(item)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
+</div>
+
       <button className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
       onClick={(e) => handleDelete(id)}>
         <svg xmlns="http://w3.org&quot" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,7 +189,12 @@ const [tasks, setTasks] = useState(updateToDoList);
       >ลดค่า</button>
 </div>
 
-        <ToDoForm addTask={addTask} />
+        <ToDoForm 
+        addTask={addTask} 
+        editingTask={editingTask}
+        updateTask={updateTask}
+        resetEditingTask={resetEditingTask}
+        />
 
 <div className="flex items-center justify-center mt-5">
 <div className="text-2xl font-bold">
@@ -182,6 +225,14 @@ const [tasks, setTasks] = useState(updateToDoList);
         <ul className="List-disc pl-5 pr-5 space-y-3 text-slate-800">
             {getToDoItem}
         </ul>
+        <Modal 
+            open={open}
+            onClose={()=>{
+                setOpen(false);
+                setSelectedTask(null);
+            }}
+            task={selectedTask}
+        />
         <Footer/>
         </>
     );
