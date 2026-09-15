@@ -10,7 +10,7 @@ export default function ShopList({ data }){
     const filterShop = data.filter(
         item => {
             const searchText = keyword.toLowerCase();
-            return item.name.toLowerCase().includes(searchText);
+            return item.shopName.toLowerCase().includes(searchText);
         }
     );
 
@@ -35,12 +35,12 @@ export default function ShopList({ data }){
         <div className="space-y-4">
         {/* Display shop */
         filterShop.map(shop => (
-            <div key={shop.id} className="border rounded=lg p-4">
+            <div key={shop.shopId} className="border rounded=lg p-4">
                 <h2 className="font-semibold">
-                    {shop.name}
+                    {shop.shopName}
                 </h2>
-                <p>Open status: {shop.openStatus}</p>
-                <Link href={`/week08/${shop.id}`}
+                <p>Open status: {shop.shopOpen}</p>
+                <Link href={`/week08/${shop.shopId}`}
                 className="inline-block mt-3 bg-teal-400 text-white px-2 py-2 rounded">
                 View Detail
                 </Link>

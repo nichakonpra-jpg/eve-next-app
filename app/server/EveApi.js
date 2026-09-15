@@ -34,25 +34,33 @@ app.get('/', (req, res) => {
 });
 
 // http://localhost:8406/shops/300
-app.get('/shops/:shopId', (req, res, next) => {
+app.get('/shops{/:shopId}', (req, res, next) => {
     try{
     let shid = Number(req.params.shopId);
     if(isNaN(shid)){
-       const error = new Error("Invalid shop id, Please try again.");
-       error.statusCode = 404;
-       throw error;
+        res.json(myShop)
+      //  res.send("Please Provide the specific shop ID, please try again.")
+      // throw new Error('Please provide the specific shop ID, Please Try again.')
     }
     const myRes = myShop.filter(
         myObj => {return (myObj.shopId === shid) }
     );
-    let myText = '';
-    myText+= `<h1>Shop information:</h1><hr/>`;
-    myText+= `Shop ID: ${myRes[0].shopId}<br/>`;
-    myText+= `Shop Name: ${myRes[0].shopName}<br/>`;
-    myText+= `Contact: ${myRes[0].shopContact}<br/>`;
-    myText+= `Address: ${myRes[0].shopAddress}<br/>`;
-    myText+= `Shop Open: ${myRes[0].shopOpen}<br/>`;
-    res.send(myText);
+
+    const isEmptyArray = Array.isArray(myRes) && myRes.length === 0
+    if(isEmptyArray){
+        res.send("Shop ID not found, please try again.")
+        throw new Error("Shop ID not found, please try again.")
+    }
+
+  //  let myText = '';
+   // myText+= `<h1>Shop information:</h1><hr/>`;
+   // myText+= `Shop ID: ${myRes[0].shopId}<br/>`;
+   // myText+= `Shop Name: ${myRes[0].shopName}<br/>`;
+   // myText+= `Contact: ${myRes[0].shopContact}<br/>`;
+   // myText+= `Address: ${myRes[0].shopAddress}<br/>`;
+   // myText+= `Shop Open: ${myRes[0].shopOpen}<br/>`;
+   // res.send(myText);
+    res.json(myRes[0]); // {..}
     } catch(error) {
         next(error);
     }

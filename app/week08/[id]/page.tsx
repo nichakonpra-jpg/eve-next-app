@@ -6,11 +6,23 @@ import Loading from "../components/Loading";
 export default async function ShopDetail({ params }){
     //Object destructuring
     const { id } = await params;
-    console.log(id)
 
-    const shop = ShopItem.find(
-        item => item.id === Number(id)
-    );
+    let shop = {};
+    try {
+      const response = await fetch(`http://localhost:8406/shops/${id}`);
+      if(response.ok){
+        shop = await response.json();
+      }else{
+        console.log(`Network can't response, please check again (Status: ${response.ok})`);
+      }
+    } catch(error) {
+      console.log(`Error fetching data from URL ${error}`)
+    }
+    //console.log(id)
+
+   // const shop = ShopItem.find(
+    //    item => item.id === Number(id)
+   // );
 
     return (
         <Suspense fallback={<Loading />}>
@@ -20,15 +32,18 @@ export default async function ShopDetail({ params }){
       </h1>
 
       <div
-        key={shop.id} className="border rounded-lg p-4 m-4">
+        key={shop.shopId} className="border rounded-lg p-4 m-4">
         <p className="mt-4 font-semibold">
-          Shop name: {shop.name}
+          Shop name: {shop.shopName}
         </p>
         <p className="my-4">
-          Category: {shop.category}
+          Category: {shop.shopAddress}
+        </p>
+                <p className="my-4">
+          Category: {shop.shopAddress}
         </p>
         <p className="my-4">
-          Open Status: {shop.openStatus}
+          Open Status: {shop.shopOpen ? "Open" : "Closed" }
         </p>
       </div>
 
