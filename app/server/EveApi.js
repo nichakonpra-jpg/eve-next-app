@@ -1,7 +1,14 @@
 import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import db from "./config/firebase.js";
 
 const app = express();
 const port = 8406;
+
+app.use(cors());
+app.use(bodyParser.json());
+
 
 // Object array []
 const myShop = [
@@ -34,11 +41,47 @@ app.get('/', (req, res) => {
 });
 
 // http://localhost:8406/shops/300
+async function getShops() {
+    const result = [];
+    const bookDocs = db.collection('shops').get();
+bookDocs.forEach(doc => {
+  result.push({
+     id: doc.id,
+     ...doc.data()
+  });
+});
+}
+
+
+
+app.get('/api/shops',async(req, res)=> {
+    try {
+    const snapshot = await db
+      .collection("shop")
+      .orderBy("shopName", "desc")
+      .get();
+
+    const shops = snapshot.docs.map((doc) => ({
+      id: doc.id, 
+      ...doc.data(),
+    }));
+
+    res.json(shops);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch shops",
+      error: error.message,
+    });
+  }
+});
+
 app.get('/shops{/:shopId}', (req, res, next) => {
+ //   res.set('Content-type','application/json');
     try{
     let shid = Number(req.params.shopId);
     if(isNaN(shid)){
-        res.json(myShop)
+        getShops()
       //  res.send("Please Provide the specific shop ID, please try again.")
       // throw new Error('Please provide the specific shop ID, Please Try again.')
     }
